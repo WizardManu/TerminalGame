@@ -37,7 +37,7 @@ def on_press(key):
     rightline = rightline + 1
     if IsItAWall(thenumber, rightline):
       rightline = rightline - 1
-  if not IsItAWall(thenumber, (rightline - 1)):
+  if not IsItAWall(thenumber, (rightline + 1)):
     rightline = rightline + 1
   for line in range(1,10):
     for block in range(0,40):
