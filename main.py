@@ -2,7 +2,7 @@ from pynput import keyboard
 from time import sleep
 from random import randint
 
-xlength = 45
+xlength = 48
 ylength = 12
 
 thenumber = 9
