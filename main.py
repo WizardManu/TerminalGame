@@ -10,7 +10,8 @@ ylength = 12
 Xcoord = 10
 Ycoord = 4
 
-WallTuples = [(1,11),(2,11),(3,10),(4,9)]
+WallTuples = [(1,11),(2,11),(3,10),(4,9),(5,8),
+(6,8),(7,8)]
 
 
 def IsItAWall(xSpot, ySpot):
