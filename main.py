@@ -11,8 +11,10 @@ Xcoord = 10
 Ycoord = 4
 
 WallTuples = [(1,11),(2,11),(3,10),(4,9),(5,8),
-(6,8),(7,8)]
-
+(6,8),(7,8),(9,8)]
+SpikeTuples = [(8,9)]
+PointTuples = [(8,7),(12,11)]
+score = 0
 
 def IsItAWall(xSpot, ySpot):
   for wall in range(len(WallTuples)):
@@ -28,7 +30,16 @@ def IsItAWall(xSpot, ySpot):
   elif xSpot >= xlength:
     return True
   return(False)
-
+def IAmSpiked(xSpot, ySpot):
+  for spike in range(len(SpikeTuples)):
+    if SpikeTuples[spike][0] == xSpot:
+      if ySpot == SpikeTuples[spike][1]:
+        return True
+def DidIScore(xSpot, ySpot):
+  for point in range(len(PointTuples)):
+    if PointTuples[point][0] == xSpot:
+      if ySpot == PointTuples[point][1]:
+        return True
 def on_press(key):
   global Ycoord
   global Xcoord
@@ -50,6 +61,8 @@ def on_press(key):
       Ycoord = Ycoord - 1
       change = True 
       jumping = True
+      if not IsItAWall(Xcoord, Ycoord - 2):
+        Ycoord = Ycoord - 1
   elif key == keyboard.Key.down:
     if not IsItAWall(Xcoord, Ycoord + 1):
       Ycoord = Ycoord + 1
@@ -59,6 +72,10 @@ def on_press(key):
   if not IsItAWall(Xcoord, (Ycoord + 1)) and not jumping:
     change = True
     Ycoord = Ycoord + 1
+  if IAmSpiked(Xcoord, Ycoord):
+    os.system('cls' if os.name == 'nt' else 'clear')
+    print("Game Over")
+    exit()
   #Prints
   if change:
     room_str = ""
@@ -66,9 +83,13 @@ def on_press(key):
       line_str = ""
       for block in range(1,xlength):
         if block == Xcoord and line == Ycoord:
-          line_str += "O"
+          line_str += str(score)
         elif IsItAWall(block, line):
           line_str += "█"
+        elif IAmSpiked(block, line):
+          line_str += "X"
+        elif DidIScore(block, line):
+          line_str += 'P'
         else:
           line_str += "~"
       room_str += line_str
