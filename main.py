@@ -13,7 +13,7 @@ Ycoord = 4
 WallTuples = [(1,11),(2,11),(3,10),(4,9),(5,8),
 (6,8),(7,8),(9,8)]
 SpikeTuples = [(8,9)]
-PointTuples = [(8,7),(12,11)]
+PointTuples = [[8,7,True],[12,11,True]]
 score = 0
 
 def IsItAWall(xSpot, ySpot):
@@ -35,14 +35,23 @@ def IAmSpiked(xSpot, ySpot):
     if SpikeTuples[spike][0] == xSpot:
       if ySpot == SpikeTuples[spike][1]:
         return True
-def DidIScore(xSpot, ySpot):
+def DidIScore(xSpot, ySpot, Change):
+  global PointTuples
   for point in range(len(PointTuples)):
     if PointTuples[point][0] == xSpot:
       if ySpot == PointTuples[point][1]:
-        return True
+          if PointTuples[point][2] == True:
+            if Change:
+              PointTuples[point][2] = False
+              return True
+            else:
+              return True
+
+
 def on_press(key):
   global Ycoord
   global Xcoord
+  global score
   #If nothing changes the "frame" is not re-printed
   #this reduces the screen glitches
   change = False
@@ -76,6 +85,8 @@ def on_press(key):
     os.system('cls' if os.name == 'nt' else 'clear')
     print("Game Over")
     exit()
+  if DidIScore(Xcoord, Ycoord, True):
+    score = score + 1
   #Prints
   if change:
     room_str = ""
@@ -88,7 +99,7 @@ def on_press(key):
           line_str += "█"
         elif IAmSpiked(block, line):
           line_str += "X"
-        elif DidIScore(block, line):
+        elif DidIScore(block, line, False):
           line_str += 'P'
         else:
           line_str += "~"
