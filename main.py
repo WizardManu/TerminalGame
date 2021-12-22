@@ -1,6 +1,4 @@
 from pynput import keyboard
-from time import sleep
-from random import randint
 import os
 
 os.system('cls' if os.name == 'nt' else 'clear')
@@ -11,10 +9,13 @@ Xcoord = 10
 Ycoord = 4
 
 WallTuples = [(1,11),(2,11),(3,10),(4,9),(5,8),
-(6,8),(7,8),(9,8)]
-SpikeTuples = [(8,9)]
-PointTuples = [[8,7,True],[12,11,True]]
+(6,8),(7,8),(9,8),(10, 10),(13,11),(17,10),(18,9)]
+SpikeTuples = [(8,9),(11,11),(14,11),(15,11)]
+PointTuples = [[8,7,True],[12,11,True],[13,9,True],[16,11,True],[18,7,True]]
 score = 0
+
+arrows = [[1,7,1,60],[2,7,2,30],[3,6,3,20],[5,6,5,30]]
+
 
 def IsItAWall(xSpot, ySpot):
   for wall in range(len(WallTuples)):
@@ -46,7 +47,11 @@ def DidIScore(xSpot, ySpot, Change):
               return True
             else:
               return True
-
+def IAmShot(xSpot, ySpot):
+  for arrow in range(len(arrows)):
+    if arrows[arrow][0] == xSpot:
+      if ySpot == arrows[arrow][1]:
+        return True
 
 def on_press(key):
   global Ycoord
@@ -70,7 +75,7 @@ def on_press(key):
       Ycoord = Ycoord - 1
       change = True 
       jumping = True
-      if not IsItAWall(Xcoord, Ycoord - 2):
+      if not IsItAWall(Xcoord, Ycoord - 1):
         Ycoord = Ycoord - 1
   elif key == keyboard.Key.down:
     if not IsItAWall(Xcoord, Ycoord + 1):
@@ -81,7 +86,13 @@ def on_press(key):
   if not IsItAWall(Xcoord, (Ycoord + 1)) and not jumping:
     change = True
     Ycoord = Ycoord + 1
-  if IAmSpiked(Xcoord, Ycoord):
+  if change == True:
+    for arrow in range(len(arrows)):
+      if arrows[arrow][0] + 1 <= arrows[arrow][3]:
+        arrows[arrow][0] += 1
+      else:
+        arrows[arrow][0] = arrows[arrow][2]
+  if IAmSpiked(Xcoord, Ycoord) or IAmShot(Xcoord, Ycoord):
     os.system('cls' if os.name == 'nt' else 'clear')
     print("Game Over")
     exit()
@@ -101,6 +112,8 @@ def on_press(key):
           line_str += "X"
         elif DidIScore(block, line, False):
           line_str += 'P'
+        elif IAmShot(block, line):
+          line_str += '>'
         else:
           line_str += "~"
       room_str += line_str
@@ -113,21 +126,7 @@ def on_release(key):
         # Stop listener
         return False
 
-
 listener = keyboard.Listener(
     on_press=on_press,
     on_release=on_release)
 listener.start()
-''''
-for frame in range(0,100):
-  for line in range(1,10):
-    for block in range(0,40):
-      if block == Xcoord and line == Ycoord:
-        print("█", end = '')
-      else:
-        print("0", end = '')
-    print("")
-  for i in range(0,2):
-    print("") 
-  sleep(0.1)
-'''
